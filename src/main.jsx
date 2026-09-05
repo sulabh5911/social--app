@@ -8,10 +8,26 @@ const seedPosts = [
   { id: '2', author: { name: 'Jordan Lee', avatar: 'https://i.pravatar.cc/100?img=12' }, text: 'Just finished my morning run. Feeling ready to make today count!', image: '', likes: [], comments: [] }
 ];
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 const api = async (path, options = {}) => {
   const token = localStorage.getItem('taskplanet-token');
-  const response = await fetch(`/api${path}`, { ...options, headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}), ...options.headers } });
-  if (!response.ok) throw new Error((await response.json()).message || 'Something went wrong.');
+
+  const response = await fetch(`${API_URL}/api${path}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options.headers
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      (await response.json()).message || 'Something went wrong.'
+    );
+  }
+
   return response.json();
 };
 
